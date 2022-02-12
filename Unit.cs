@@ -12,7 +12,7 @@ namespace Unit {
 		public struct VERSION {
 			public  const            uint      MAJOR     =  2022;
 			public  const            uint      MINOR     =  42;
-			public  const            uint      REVISION  =  9383740;
+			public  const            uint      REVISION  =  9764033;
 			public  static readonly  string    STRING    =  $"V{MAJOR}.{MINOR:D3} R{REVISION:D7}";
 		}
 	}
@@ -53,6 +53,11 @@ namespace Unit {
 		private Action? _setup;
 		private Action? _clean;
 		private List<Suite> _suitelist;
+
+		// A Static Constructor Wrapper as a Syntactic Sugar
+		public static Engine New( Action? setup = null, Action? clean = null ) {
+			return new Engine( setup, clean );
+		}
 
 		public Engine( Action? setup = null, Action? clean = null ) {
 				_setup = setup;
@@ -129,6 +134,11 @@ namespace Unit {
 		// FINAL FUNCTION
 		public void Disable() {
 			_enabled = false;
+		}
+
+		// Static Wrapper for the Constructor as a Syntactic Sugar
+		public static Suite New( string? name, Action? setup = null, Action? clean = null ) {
+			return new Suite( name, setup, clean );
 		}
 
 		public Suite( string? name, Action? setup = null, Action? clean = null ) {
@@ -241,6 +251,11 @@ namespace Unit {
 		// FINAL FUNCTION
 		public void Disable() {
 			_enabled = false;
+		}
+
+		// Static Wrapper for Constructor as a Syntactic Sugar
+		public static Test New( string? name, Action test, Action? setup = null, Action? clean = null ) {
+			return new Test( name, test, setup, clean );
 		}
 
 		public Test( string? name, Action test, Action? setup = null, Action? clean = null ) {
