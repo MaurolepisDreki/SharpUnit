@@ -12,7 +12,7 @@ namespace Unit {
 		public struct VERSION {
 			public  const            uint      MAJOR     =  2022;
 			public  const            uint      MINOR     =  42;
-			public  const            uint      REVISION  =  8430368;
+			public  const            uint      REVISION  =  9383740;
 			public  static readonly  string    STRING    =  $"V{MAJOR}.{MINOR:D3} R{REVISION:D7}";
 		}
 	}
@@ -208,14 +208,14 @@ namespace Unit {
 		#endregion
 
 		#region Test Implimentation
-		private string _name;
+		private string? _name;
 		private Action? _setup;
 		private Action _test;
 		private Action? _clean;
 		private List<Assert> _assertlist;
 		private bool _enabled;
 
-		public string Name {
+		public string? Name {
 			get{ return _name; }
 		}
 
@@ -243,7 +243,7 @@ namespace Unit {
 			_enabled = false;
 		}
 
-		public Test( string name, Action test, Action? setup = null, Action? clean = null ) {
+		public Test( string? name, Action test, Action? setup = null, Action? clean = null ) {
 			if( test == null ) throw new TestException( "Empty Test" );
 
 			_name = name;
@@ -268,15 +268,16 @@ namespace Unit {
 		public void Run() {
 			if( _enabled ) {
 				AssertFatal? ex = null;
-				Console.Write( "   TEST: {0}... ", _name );
+				if( _name is not null ) Console.Write( "   TEST: {0}... ", _name );
 				_assertlist.Clear(); //< Fresh Run
 				if( _setup != null ) _setup();
 				try{ _test(); }
 				catch( AssertFatal e ) { ex = e; }
 				if( _clean != null ) _clean();
-				Console.WriteLine( Passed ? "OK" : "FAIL" );
+				if( _name is not null ) Console.WriteLine( Passed ? "OK" : "FAIL" );
 
 				/* Log Errors */
+				if( _name is not null )
 				for( int i = 0; i < _assertlist.Count; i++ ) {
 					if( ! _assertlist[ i ].Passed ) {
 						Console.Write( "     [{0}] ", i );
