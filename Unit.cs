@@ -11,8 +11,8 @@ namespace Unit {
 		public     static readonly  string[]  EMAIL     =  { "alpha at the fenrir unchained dot info" };
 		public struct VERSION {
 			public  const            uint      MAJOR     =  2022;
-			public  const            uint      MINOR     =  29;
-			public  const            uint      REVISION  =  4862395;
+			public  const            uint      MINOR     =  42;
+			public  const            uint      REVISION  =  8430368;
 			public  static readonly  string    STRING    =  $"V{MAJOR}.{MINOR:D3} R{REVISION:D7}";
 		}
 	}
@@ -60,12 +60,14 @@ namespace Unit {
 				_suitelist = new List<Suite>();
 		}
 
-		public void SetSetup( Action? setup ) {
+		public Engine SetSetup( Action? setup ) {
 			_setup = setup;
+			return this;
 		}
 
-		public void SetCleanup( Action? clean ) {
+		public Engine SetCleanup( Action? clean ) {
 			_clean = clean;
+			return this;
 		}
 
 		public Suite NewSuite( string name, Action? setup = null, Action? clean = null ) {
@@ -74,14 +76,17 @@ namespace Unit {
 			return mySuite;
 		}
 
-		public void AddSuite( Suite suite ) {
+		public Engine AddSuite( Suite suite ) {
 			if( _suitelist.IndexOf( suite ) < 0 ) {
 				_suitelist.Add( suite );
 			} else {
-					throw new EngineException( "Duplicate Suite" );
+				throw new EngineException( "Duplicate Suite" );
 			}
+
+			return this;
 		}
 
+		// NOTE: FINAL FUNCTION: not returning the current object *is not* an oversight!
 		public void Run() {
 			AssertFatal? ex = null;
 			if( _setup != null ) _setup();
@@ -116,10 +121,12 @@ namespace Unit {
 			get{ return _enabled; }
 		}
 
+		// FINAL FUNCTION
 		public void Enable() {
 			_enabled = true;
 		}
 
+		// FINAL FUNCTION
 		public void Disable() {
 			_enabled = false;
 		}
@@ -138,14 +145,27 @@ namespace Unit {
 			return myTest;
 		}
 
-		public void AddTest( Test test ) {
+		public Suite AddTest( Test test ) {
 			if( _testlist.IndexOf( test ) < 0 ) {
 				_testlist.Add( test );
 			} else {
 				throw new SuiteException( "Duplicate Test" );
 			}
+	
+			return this;
 		}
 
+		public Suite SetSetup( Action? setup ) {
+			_setup = setup;
+			return this;
+		}
+
+		public Suite SetCleanup( Action? clean ) {
+			_clean = clean;
+			return this;
+		}
+
+		// FINAL FUNCTION
 		public void Run() {
 			if( _enabled ) {
 				AssertFatal? ex = null;
@@ -213,10 +233,12 @@ namespace Unit {
 			get{ return _enabled; }
 		}
 
+		// FINAL FUNCTION
 		public void Enable() {
 			_enabled = true;
 		}
 
+		// FINAL FUNCTION
 		public void Disable() {
 			_enabled = false;
 		}
@@ -238,8 +260,9 @@ namespace Unit {
 			Test.Unregister( this );
 		}
 
-		public void AddAssert( Assert assert ) {
+		public Test AddAssert( Assert assert ) {
 			_assertlist.Add( assert );
+			return this;
 		}
 
 		public void Run() {
