@@ -107,13 +107,13 @@ namespace Unit {
 
 	// SharpUnit's Suite Object
 	public class Suite : Component {
-		private string _name;
+		private string? _name;
 		private Action? _setup;
 		private Action? _clean;
 		private List<Test> _testlist;
 		private bool _enabled;
 
-		public string Name {
+		public string? Name {
 			get{ return _name; }
 		}
 
@@ -131,7 +131,7 @@ namespace Unit {
 			_enabled = false;
 		}
 
-		public Suite( string name, Action? setup = null, Action? clean = null ) {
+		public Suite( string? name, Action? setup = null, Action? clean = null ) {
 			_name = name;
 			_setup = setup;
 			_clean = clean;
@@ -169,7 +169,7 @@ namespace Unit {
 		public void Run() {
 			if( _enabled ) {
 				AssertFatal? ex = null;
-				Console.WriteLine( " SUITE: {0}:", _name );
+				if( _name is not null ) Console.WriteLine( " SUITE: {0}:", _name );
 				if( _setup != null ) _setup();
 				try{ foreach( Test test in _testlist ) test.Run(); }
 				catch( AssertFatal e ) { ex = e; }
